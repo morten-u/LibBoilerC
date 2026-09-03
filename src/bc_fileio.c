@@ -2,8 +2,6 @@
 
 // Headers
 
-#include <handleapi.h>
-#include <minwinbase.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,6 +11,7 @@
 #if defined (_WIN32)
 #include <windows.h>
 #include <io.h>
+#include <handleapi.h>
 
 #elif defined(__linux__)
 #include <unistd.h>
@@ -210,7 +209,7 @@ bool bc_dirEmpty(const char *dirname) {
         }
 
         while ((entry = readdir(dir)) != nullptr) {
-            if (strcmp(entry->name, ".") != 0 && strcmp(entry->name, "..") != 0) {
+            if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0) {
                 closedir(dir);
                 return false;
             }
