@@ -14,7 +14,7 @@
 #include <windows.h>
 #include <io.h>
 
-#elif defined(__LINUX__)
+#elif defined(__linux__)
 #include <unistd.h>
 #include <dirent.h>
 
@@ -153,7 +153,7 @@ bool bc_fileExist(const char *filename) {
 }
 
 
-#elif defined (__LINUX__) // LINUX
+#elif defined (__linux__) // LINUX
 bool bc_fileExist(const char *filename) {
     return (access(filename, F_OK) == 0);
 }
@@ -199,7 +199,7 @@ bool bc_dirEmpty(const char *dirname) {
     return true;
 }
 
-#elif defined(__LINUX__)
+#elif defined(__linux__)
 
     bool bc_dirEmpty(const char *dirname) {
         struct dirent *entry;
