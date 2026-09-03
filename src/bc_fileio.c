@@ -2,6 +2,7 @@
 
 // Headers
 
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -102,6 +103,39 @@ char* bc_fileRead(const char *filename) {
     return buf;
 }
 
+bool bc_fileSize(const char *filename, size_t *size) {
+    *size = 0;
+
+    FILE *file = fopen(filename, "r");
+    if (!file) {
+        perror("Error opening file");
+        return false;
+    }
+
+    if (fseek(file, 0, SEEK_END) != 0) {
+        perror("Error fseek end of file");
+        fclose(file);
+        return false;
+    }
+
+    long file_size = ftell(file);
+    if (file_size == -1) {
+        perror("Error ftell file size");
+        fclose(file);
+        return false;
+    }
+    *size = (size_t)file_size;
+
+    return true;
+}
+
+bool bc_fileDelete(const char *filename) {
+    if (remove(filename) != 0) {
+        perror("Error deleting file");
+        return false;
+    }
+    return true;
+}
 
 #if defined (_WIN32) // WINDOWS
 

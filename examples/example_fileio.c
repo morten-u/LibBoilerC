@@ -29,6 +29,10 @@ int main() {
     printf("Content: %s\n", content);
     free(content);
 
+    if (!bc_fileDelete("ignore/fileio.txt")) {
+        printf("Failed to delete file\n");
+        return 1;
+    }
 
     return 0;
 }
