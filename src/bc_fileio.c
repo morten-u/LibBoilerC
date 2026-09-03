@@ -2,14 +2,22 @@
 
 // Headers
 
+#include <handleapi.h>
+#include <minwinbase.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
 
 #if defined (_WIN32)
-    #include <io.h>
+#include <windows.h>
+#include <io.h>
+
 #elif defined(__LINUX__)
-    #include <unistd.h>
+#include <unistd.h>
+#include <dirent.h>
+
 #endif
 
 
@@ -18,6 +26,7 @@
 
 // Already cross platform
 
+// Files
 bool bc_fileWrite(const char *filename, const char *content) {
 
     FILE *file = fopen(filename, "w");
@@ -144,8 +153,71 @@ bool bc_fileExist(const char *filename) {
 }
 
 
-#elif defined (__LINUX) // LINUX
+#elif defined (__LINUX__) // LINUX
 bool bc_fileExist(const char *filename) {
     return (access(filename, F_OK) == 0);
 }
+#endif
+
+
+// Directories
+
+bool bc_dirExist(const char *dirname) {
+    struct stat stats;
+
+    if (stat(dirname, &stats) == 0) {
+        return S_ISDIR(stats.st_mode);
+    }
+
+    return false;
+}
+
+
+#if defined (_WIN32)
+
+bool bc_dirEmpty(const char *dirname) {
+    char search_path[MAX_PATH];
+
+    snprintf(search_path, sizeof(search_path), "%s\\*", dirname);
+
+    WIN32_FIND_DATAA find_data;
+    HANDLE handle = FindFirstFileA(search_path, &find_data);
+
+    if (handle == INVALID_HANDLE_VALUE) return false;
+
+    do
+    {
+
+        if (strcmp(find_data.cFileName, ".") != 0 &&
+            strcmp(find_data.cFileName, "..") != 0) {
+                FindClose(handle);
+                return false;
+        }
+
+    } while(FindNextFileA(handle, &find_data));
+
+    return true;
+}
+
+#elif defined(__LINUX__)
+
+    bool bc_dirEmpty(const char *dirname) {
+        struct dirent *entry;
+        DIR *dir = opendir(dirname);
+
+        if (!dir) {
+            return false;
+        }
+
+        while ((entry = readdir(dir)) != nullptr) {
+            if (strcmp(entry->name, ".") != 0 && strcmp(entry->name, "..") != 0) {
+                closedir(dir);
+                return false;
+            }
+        }
+
+        closedir(dir);
+        return true;
+    }
+
 #endif

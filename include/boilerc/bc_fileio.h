@@ -24,3 +24,9 @@ bool bc_fileSize(const char *filename, size_t *size);
 // Deletes 'filename'
 // returns true on success, and false on failure
 bool bc_fileDelete(const char *filename);
+
+
+// Dir
+
+bool bc_dirExist(const char *dirname);
+bool bc_dirEmpty(const char *dirname);

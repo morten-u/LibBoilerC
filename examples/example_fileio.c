@@ -1,4 +1,5 @@
 #include "boilerc/bc_fileio.h"
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -32,6 +33,22 @@ int main() {
     if (!bc_fileDelete("ignore/fileio.txt")) {
         printf("Failed to delete file\n");
         return 1;
+    }
+
+    if (bc_dirExist("src")) {
+        printf("Found source directory\n");
+    }
+
+    if (!bc_dirExist("no_dir_like_this")) {
+        printf("bc_dirExist works\n");
+    }
+
+    if (bc_dirEmpty("ignore")) {
+        printf("ignore directory is empty\n");
+    }
+
+    if (!bc_dirEmpty("src")) {
+        printf("bc_dirEmpty works\n");
     }
 
     return 0;
