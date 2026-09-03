@@ -9,5 +9,9 @@ int main() {
         printf("Did not work\n");
     }
 
+    if (!bc_fileWrite("ignore/fileio.txt", "Hello, World!")) {
+        printf("Failed to write to file\n");
+    }
+
     return 0;
 }
